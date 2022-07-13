@@ -1,0 +1,813 @@
+jenkins(continuous integration) 
+It is the process of automating the  building and testing of code ,
+    each time one of the team member commit changes to version controle.
+*** IMPORTANCE OF CONTINUES INTEGRATION:
+
+1. Improves quaility: improves quaillity by runnning muiltiple unittests
+                       and analyiseing  various staticode.
+2.Increase productivity:automating build of code saves  a lot of time ,
+                         there by increasing productivity.    
+3.Reduses Risk :eliminate the risk.
+
+•	From Jenkins we need to create a pipeline to
+•	get the latest version of the code
+•	build the code into some package
+•	run some code quality tools
+•	upload the package to some repository
+•	deploy the application into various test environments
+
+
+{{{{{{ https://crontab.guru/}}}}}}
+
+
+IN this is a placed the types
+*Continuous Development
+*Continuous Build
+*Continuous Test
+*Continuous Deployment( in this can be achived the qualitative product, testing, codeis always satable)
+
+Installation of Jenkins:
+
+yum install java-1.8.0-openjdk
+alternatives --config java
+vim /etc/profile
+export JAVA_HOME= /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.322.b06-1.el7_9.x86_64
+  export PATH= $JAVA_HOME/bin:$PATH
+source /etc/profile
+echo $JAVA_HOME
+go to jenkins.io
+1.curl --silent --location http://pkg.jenkins-ci.org/redhat-stable/jenkins.repo | sudo tee /etc/yum.repos.d/jenkins.repo
+2.sudo rpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.key
+3.sudo yum install jenkins
+4.sudo systemctl start jenkins
+5.systemctl status jenkins
+ip:8080
+thenit can be unlocked
+new iteam  
+*****{
+
+    jenkins projects:
+
+    1.free style:this is the central feature of jenkins.
+                   jenkins will build your project combaining any scm withany build.
+    2.muiltconfiguration file:suitable for projects that needs larger number of different confugurations,
+                             such as testing on muuilteple environment , platform specific build etc.
+    3.github organisation: 
+                      scans  agithub  organisation for all matching repositories
+    4.pipeline:
+               suitable for building pipelines or organisaing complaxactivites  that do not easily fit in freestyle.
+    5.foledr :
+               creates a container  and stores nested items in it . useful for grouping things  together.
+    6.muiltibranch pipeline:
+               Creates a set of pipeline project  according to dedicated  branches in one scm repositories . 
+}
+job1(general, source code management, build triggers, build environment, build, post build actions)
+            •	This project has six sections
+•General:
+•	This section has basic description about project
+•Source Code Management:
+•	This section defines the source code management or version control of the project code
+•	By default jenkins will have git plugin installed, so we will see two options none and Git.
+•	If you require other VCS systems
+•	install vcs on the node
+•	install vcs plugin on jenkins ui
+•Build Triggers:
+•	Basically focused on when to build a project
+•Build Environment
+•Build
+•Post Build Actions 
+
+@@@@@@
+different users:
+
+manage Jenkins (majority task under go's)
+configure global security
+authorization:
+1 any one can do anything
+2 logged inuser can do anything
+3 legacy mode
+4 matrix based( different users can do have different  permissions)
+5 project based ( in this have developer have only developer permissions, like also the tester have tester 
+permissions , ops person have ops permissions)
+plug-in management
+
+manage plugins>
+updated ,available,  installed ,advanced
+audit trail plug-in(in this have to keep logins  store the place who person logged in who can changes the code
+ and with time stamp)
+
+
+ Day builds and Night Builds(H * * * 1-5)
+•	
+
+
+
+
+
+manage Jenkins> configure system( location=tmp/jenkinsaudit.log,25,5)
+Notification management
+suppose the jobs can be connected in pipeline format if any job fail it be send to the particular notification
+ (some job can be failed)
+
+SMTP(simple mail transfer protocol) org have own servers
+manage Jenkins> configure system
+extended email notification (465)
+it can be attached the( project name , build number ,build status)
+job1>post build actions > editable email notification project mails 
+attach build tag
+click advanced >in that have verify the it can be correct or not
+
+scheduling the jobs automatically( this is not lms)
+1)schedule through timer{Day builds(H * * * 1-5) and Night Builds()}
+2)schedule through poll scm
+3)through the pipeline
+1)timer(developer writes  the code every  day and it can be every time (day, week, month)
+job1> build triggers> build periodically( give time */2****)   IT can be BUILD A EVERY TWO MINUTES  
+2) poll scm 
+compile job (when there is a commit it can be pull the code)
+job3> freestyle > scm >git  "place the link repo url">build triggers (*/2****)
+
+
+
+MASTER SLAVE ARCHITECTURE  ( JENKINS)
+
+Jenkins sever is where install Jenkins(Linux)
+test job  (windows) where we  add to slave to Jenkins master
+manage jenkins > managenodes> new node
+ name :window slave
+description: window10
+no of jobs run:1
+remote root directory:  :c/govardhan/jenkins
+labels : win slave	
+usage : where can use
+launch model:jnlp connection (java network launch protocal) {{
+SAVE
+
+configure global security>agents> random port(it can be enable)
+
+R6jenkins
+delivery pipeline
+1) github repository link(specify the GITHUB  repo link to pull the code to Jenkins)
+2)build trigger (specify the previous job that   triggers the  current  job)
+3) job goal (specify the testing goal/action for each  job)
+4)post build action(specify the next job/action to be triggered)
+ continuous delivery pipeline:
+1 build automation
+2continuous delivery
+3 test automation
+4deployment automation
+simple pipeline:
+  compile -----> test
+
+delivery pipeline for our project
+
+1compile   (converting src code to executable)
+2 code review   ( check the code is organisation  standards or not ) 
+3 qa unit test   ( how many test cases are completed)
+4metric check  ( in this is check the percentage of code is completed (ex: 100% in 20% completed)
+5qa package   ( in this job  converting executable code into war file)
+6 deployment
+
+@@@@@@@@
+MAVEN AS A BUILD TOOL:
+
+
+BUILD AUTOMATION TOOL:  
+java project(lib&bins)
+1)100  dependencies  it can be updated
+2)continuous build 
+  3)build automation tool maven
+MAVEN: lifecycle
+1.clean lifecycle 
+2.build lifecycle
+3.site lifecycle
+###
+# first time it will  goes maven have central repository
+#local repository 
+local          central        remote
+
+INSATALLATION MAVEN:
+Maven contd..
+•	POM stands for Project Object model and is fundamental file in Maven. This is an xml file that
+    will be present in the base directory of the project as pom.xml
+•	This file contains information about project and various configurations used by maven 
+     to build the project
+•	In the maven file the basic components are
+•	project root : This is projects root taag
+•	modelVersion: This is maven schema version number and is always 4.0.0
+•	groupId: Name of your organization or departmetn
+•	artifactId: project id
+•	version: version of your project. In version if you specify SNAPSHOT it refers as if the version is still 
+under development. To specify release the convention is to remove SNAPSHOT from version.
+•	Super POM:
+•	This mavens default POM. All POMs inherit from a parent or default POM
+•	Navigate to be basedir of the project and execute “`mvn help:effective-
+
+*** there is three lifecycles:
+   default: the main life cycle as it's responsible for project deployment
+clean: to clean the project and remove all files generated by the previous build
+site: to create the project's site documentation
+
+•	Build Phases in Maven:
+validate:    check if all information necessary for the build is available
+compile:         compile the source code
+test-compile:    compile the test source code
+test:           run unit tests
+package:       package compiled source code into the distributable format (jar, war, …)
+integration-test:   process and deploy the package if needed to run integration tests
+install:         install the package to a local repository
+deploy:        copy the package to the remote repository
+•	prepare-resources
+
+•	These build phases can be specified to maven as goals:
+
+Local Repository:
+•	This is the folder location on the machine where maven is installed
+•	Default location of local repository is (%HOME-DIR%/.m2/)
+Central Repository:
+•	This is repository maintained by Maven community and 
+    it contains large number of common librarues
+•	When maven does not find dependencies in the local repository it will start searching in 
+    the central repository
+Remote Repository: Maven provides a concept of remote repository
+ which is organization own custom repository containing libraries developed and other project jars.
+  The remote repository location can be specifed in the projects pom.xml or in the settings.xml file
+
+
+
+
+•	compile goal will compile the source code and generates .class files in the target folder
+•	test goal will run the unit tests written in src/test folder
+•	package goal will create the jar/war file as specified in pom.xml
+•	install goal will copy the jar/war file and pom file to local repository (~/.m2)
+•	deploy goal will copy the jar/war file into configured repository (central or remote)
+•	clean goal will remove the generated target folders
+
+yum install maven
+mvn --version
+vim /etc/profile
+export MAVEN_HOME=/usr/share/maven
+source /etc/profile
+echo MAVEN_HOME
+cd /tmp
+mkdir git repo
+git clone ("url    ")
+mvn compile
+
+%%%%%
+
+jenkins gui
+compile>free style
+
+manage jenkins> global   tool   configuration
+(in this you have installed the java, maven, git )
+name = myjava
+add jdk> insatll automatically( give credintels oracle)
+git default
+add maven
+mymaven
+version (3.6.2)
+come to compile
+job
+BUILD  section choose invoke top level
+1)goal (compile)
+save > build now
+2) code review( review the compiled code to check weather the code is organisations standerd)
+pmd:pmd or checkstyle
+3)qa unit test
+ test ( target/surefire-reports/*.xml)
+4)qa metric check( calculate the persentage of code accessed by testing  using Cobertura plugin)
+cobertura:cobertura -Dcobertura.report.format=xml
+5) package(converting all exicuted code into single deployed file)
+package
+
+
+
+
+PIPELINE FORMATION:
+it can be followed by upstream and  downstream
+open compile:
+configure > post build> codereview
+codereview> buildtriggers>compile
+postbuild >qaunittest
+qa unit test> configure> code review
+postbuild> metriccheck
+metric check>configure>Qa unit test
+post build > package
+package> configure> build trigger >metric check
+all are connected: run the compile
+
+
+devops manage jenkins> plugin> build pipeline>
+devops > choose the compile
+(you  see the pipeline stage now)
+
+
+
+after that pipeline stages:
+i) scripted pipeline
+    Scripted Pipeline:
+This is primarily a Groovy Script (Java Based Language)
+example of scripted
+ *** node('ltecomm') {
+    stage('git'){
+        git 'https://github.com/wakaleo/game-of-life.git'
+    }
+    stage('maven') {
+        sh 'mvn clean package'
+    }
+    stage('archive artifacts') {
+        archive 'gameoflife-web/targets/gameoflife.war'
+    }
+}
+ii) declarative pipeline
+   This was introduced by Cloud bees and this reduces the need to supplement the pipeline 
+   defintion with Groovy code to emulate traditional features of jenkin
+  example of declarative:
+  ***
+   pipeline {
+    agent { label 'ltecomm' }
+    stages {
+        stage('SCM') {
+            steps {
+                git 'https://github.com/wakaleo/game-of-life.git'
+            }
+        }
+        stage('Build') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+    }
+} 
+ *****
+ Scripted vs Declarative Pipeline
+Scripted syntax refers to the intial way of pipeline as code in jenkins
+Scripted Syntax is imperative style and is more dependend on Groovy language and Groovy constructs
+Declarative syntax is the newer option
+Pipelines are defined in a declarative style in clear sections that describe the states rather than focussing on logic   
+*****
+ In this you can also the set the timer of croanjob
+ pipeline {
+    agent { label 'ltecomm'}
+    triggers {
+        cron('H * * * 1-5')
+    }
+    stages {
+        stage('scm') {
+            steps {
+
+
+
+
+
+
+
+pipeline{
+    
+    agent any{ label 'ltecomm'}
+    triggers {
+        cron('H * * * 1-5')
+    
+        stages{
+            stage('checkout'){
+                steps{
+                    git 'https://github.com/devops-trainer/DevOpsClassCodes.git'
+                    }
+                }
+            stage('compile'){
+                steps{
+                    sh "mvn compile"
+                }
+            }
+            stage('test'){
+                steps{
+                    sh "mvn test"
+                }
+            }
+            stage('package'){
+                steps{
+                    sh "mvn package"
+                }
+            }
+       }
+       
+}
+
+
+ 
+JENKINS INTERGARETE WITH DOCKER AND KUBERNETES:
+   node{
+       stage("Git clone"){
+           git credintalisID: 'git_credintiales',url: "git link"
+           stage("maven clean Build"){
+               def mavenhome = tool name :"maven=3.6.1,type:"maven"
+               def mavenCMD= "$(mavenHome)/BIN/MVN"
+               sh "$(maven CMD)CLEAN PACKAGE"
+           }
+           stage(Build Docker Image"){
+               sh "docker build -t "docker user name"/spring-boot-mango ."
+           }
+           stage ("docker push"){
+               (passward{{ in that place can go jenkins credintails under write passwrd ,it can be create a link ,paste it}}) 
+               sh "docker login -u (username of hub) -p ${ docker hub credintails}"
+           }
+            sh " docker push dockerhub name/ repos of placed
+           }
+           }
+            stage (" deploy application on k8s cluster"){
+                kubernetsDploy(
+                    config:" .yml ",
+                )
+            }
+           }
+
+           <!-- steps{
+        script {
+          docker.withRegistry("https://${DOCKER_SERVER}", DOCKER_CREDENTIALS) {
+            image.push()
+            image = docker.build imageTagPartial+":latest"
+            image.push()
+          }
+        } -->
+       }
+   }
+ go to jenkins> mange jenkins> manage plugins> search " kubernets continuous deploy" plugin
+ go to credintails >> add kubernetes confuguration>> 
+ under that : add id " kubernets_cluster
+              Description: kubernets config>>> on the cluster : .kube/ " cat .kube/config" which ip,port  what is credintils.
+
+
+
+
+
+
+•	Git Hooks call the scripts which can be in any scripting language
+•	Git Hooks are of two types
+•	Client Side Hooks:
+•	          These are executed on the commiter’s system
+•	           This can be further categorized as
+•	             Commiting workflow hooks
+•	                 Email Workflow Hooks
+•	                  Other
+•	Server-Side Hooks:
+              These are executed on the remote repository. These are divided into following categories.
+•	                Pre-receive and Post-receive hooks
+•	                Update
+•	             Server Side Hooks are the scripts which are executed on server, but if the organization is using 
+             cloud/hosted repositories like GitHub/Code Commit/ Azure Source Repos/Bit Bucket then web hooks are enabled.
+
+
+
+s3 artifacts stored :
+create bucket : 
+
+bucket name:s3 artifacts
+region:
+create:
+
+create iam role>> this role can be assigned to  ec2>> create policiys>> give s3 full acess 
+
+In jenkins>> manage jenkins> manage plugins > s3 publisher >> configure it 
+profile name :
+iam role
+apply ,save
+
+
+
+@@@@@:
+Git Hooks
+•	Git Hooks are scripts that run automatically every time a particular event occurs in Git Repository
+•	Git Hooks are located in the .git/hooks 
+@@@@@
+•	Git Hooks call the scripts which can be in any scripting language
+Git Hooks are of two types
+	1.Client Side Hooks:
+•	   These are executed on the commiter’s system
+•	    This can be further categorized as
+•	       Commiting workflow hooks
+•	         Email Workflow Hooks
+•	             Other
+•	Server-Side Hooks: These are executed on the remote repository. These are divided into following categories.
+•	Pre-receive and Post-receive hooks
+•	Update
+•	Server Side Hooks are the scripts which are executed on server, but if the organization is using
+       cloud/hosted repositories like GitHub/Code Commit/ Azure Source Repos/Bit Bucket then web hooks are enabled.
+
+
+sample pre commit hook 
+
+ #!/bin/bash
+echo " precommit"
+set
+
+
+
+
+
+
+
+
+
+
+
+•	With hooks whenever developer submits code we can execute functionality by calling hook scripts,
+      So when developer submits code we can call
+•	Jenkins to build
+•	Ansible to deploy
+•	Terraform to deploy
+•	If you do these kind of activities where your pipeline is triggered as part of git hook it is also referred as git ops.
+•	In the case of git hub we can configure web hooks and from there call the pipeline 
+
+
+
+jenkins pipeline:
+def image
+def imageTag
+def imageTagPartial
+pipeline {
+  agent any 
+  triggers {
+     cron('H H(0-6) * * *')
+  }
+  options {
+    buildDiscarder(logRotator(daysToKeepStr: '7', artifactDaysToKeepStr: '7'))
+  }
+  environment {
+    REPOSITORY_NAME = "${env.GIT_URL.tokenize('/')[3].split('\\.')[0]}"
+    REPOSITORY_OWNER = "${env.GIT_URL.tokenize('/')[3]}"
+    GIT_SHORT_REVISION = "${env.GIT_COMMIT[0..7]}"
+    //REDHAT_DOCKER_PASS = credentials('mss-redhat-docker-pass')
+    //REDHAT_API_TOKEN = credentials('mss-redhat-connect-api-token')
+    //RH_PROJECT_ID = "ospid-1fece6b3-e612-4192-8992-1600e5af2c72"
+    DOCKER_SERVER = "${env.MCDS_DOCKER_SERVER_PRD}"
+    DOCKER_CREDENTIALS = 'mcds-docker-registry-prd-credentials'
+    IGNORE_ENV='DL3006,DL3020,DL4000'
+    IMAGE_REPO_PROJECTNAME='project-apmt1' 
+    PATH = "/usr/local/bin/docker:/usr/local/bin:/usr/bin:/usr/bin/npm:/usr/bin/podman:/usr/bin/docker:/bin:/usr/sbin:/sbin:$PATH"
+    //TOOL = tool name: 'hadolint-Linux-x86_64', type:     'com.cloudbees.jenkins.plugins.customtools.CustomTool'
+    //PATH = "${tool 'hadolint-Linux-x86_64'}:$PATH"
+  }
+
+  stages {
+
+    stage('Checkout') {
+      steps {
+        deleteDir()
+        checkout scm
+      }
+    }
+
+    //stage('Jenkinsfile Version Update Check') {
+    //  steps {
+    //    script {
+    //      warnError('Jenkinsfile Version Mismatch') {
+    //        withCredentials([string(credentialsId: 'ibm-github-token', variable: 'GITHUB_TOKEN')]) {
+    //          sh '''#!/bin/bash
+    //             DIRNAME=`head -n1 Jenkinsfile | sed "s/\\/\\/ \\([^:]*\\).*/\\1/g"`
+    //            echo -e "Jenkinsfile Version Diff\n---------------------------"
+    //            if ! diff <(curl -s -u "token:$GITHUB_TOKEN" -H "Accept: application/vnd.github.v3.raw" "https://github.ibm.com/api/v3/repos/managed-security/generator-mss/contents/generators/categories/pipeline/templates/$DIRNAME/Jenkinsfile?ref=master" | head -n1) <(head -n1 Jenkinsfile); then
+    //              echo -e "\n!!! WARNING !!!\nJenkinsfile template version differs from the latest at https://github.ibm.com/managed-security/generator-mss/blob/master/generators/categories/pipeline/templates/$DIRNAME/Jenkinsfile - consider upgrading. See diff output above for version details."
+    //              exit 1
+    //            else
+    //              echo -e "\nOK: Jenkinsfile template version matches latest at https://github.ibm.com/managed-security/generator-mss/blob/master/generators/categories/pipeline/templates/$DIRNAME/Jenkinsfile ."
+    //            fi
+    //          '''
+    //        }
+    //      }
+    //    }
+    //  }
+    //}
+
+    stage('Set Full Version') {
+      steps {
+        script {
+          def fullVersion
+          def branch
+          branch = "${env.GIT_BRANCH.replace("origin/", "")}"
+          def version = fileExists("version.txt") ? sh(script: "cat version.txt", returnStdout: true).trim() : "0.0.0"
+          if (env.GIT_BRANCH == 'master') {
+            if (env.GIT_TAG) {
+              if (!(env.GIT_TAG =~ version)) {
+                error "Git tag '${env.GIT_TAG}' does not match version '${version}' from verion.txt Please correct mismatch and rebuild."
+              }
+              fullVersion = env.GIT_TAG
+            } else {
+              fullVersion = "${version}-rc.${env.BUILD_NUMBER}"
+            }
+          }
+          else {
+            fullVersion = "${version}.${branch}.${env.BUILD_NUMBER}-${env.GIT_SHORT_REVISION}"
+          }
+          echo "Full version calculated as '${fullVersion}' based on branch '${branch}'"
+          imageTagPartial = "${env.REPOSITORY_NAME}"
+          imageTag = "${imageTagPartial}:${fullVersion}"
+          echo "Image Tag '${imageTag}''"
+          echo "Docker Server  '${DOCKER_SERVER}''"
+        }
+      }
+    }
+    
+    stage('Validate Dockerfile') {
+      steps {
+          sh '''#!/bin/sh
+              printf "ignored:" > hadolint.conf;
+              (IFS=','; for word in ${IGNORE_ENV}; do printf "\n  - $word" >> hadolint.conf ; done)
+              #hadolint-Linux-x86_64  --trusted-registry registry.access.redhat.com -c hadolint.conf Dockerfile
+              #hadolint  --trusted-registry registry.access.redhat.com -c hadolint.conf Dockerfile
+             '''
+
+      }
+
+     /*
+      post {
+          always {
+              archiveArtifacts 'hadolint_lint.txt'
+          }
+      }*/
+    }
+    //stage('Build Image') {
+    //  steps {
+    //    script {
+    //      docker.withRegistry("https://${DOCKER_SERVER}", DOCKER_CREDENTIALS) {
+    //        image = docker.build imageTag
+    //      }
+    //    }
+    //  }
+    //} 
+    stage('Build Image') {
+      steps {
+        script {
+          //docker.withRegistry("https://${env.MCDS_DOCKER_SERVER}", 'mcds-docker-registry-credentials') {
+            //image = docker.build imageTag
+            sh '''#!/bin/bash 
+              echo "building '''+imageTag+''' ..."
+              docker image build -t '''+imageTag+''' .
+              
+             ''' 
+            
+          //}
+        }
+      }
+    }
+    //stage('Clair Scan ') {
+    //  steps {  
+    //    script {
+    //      //warnError('Clair Scan Failure') {
+    //        //docker.withRegistry("https://${DOCKER_SERVER}/${IMAGE_REPO_PROJECTNAME}", DOCKER_CREDENTIALS,"--tls-verify=false") {
+    //            try {
+    //              sh '''#!/bin/bash
+    //                #echo  ""
+    //                IMAGENAME='''+imageTag+'''
+    //                echo "Image to  scan : $IMAGENAME"
+    //                CLAIR_DB_ID=`docker ps -a -q --filter name=db --format="{{.ID}}"`
+    //                CLAIR_SERVER_ID=`docker ps -a -q --filter name=clair --format="{{.ID}}"`
+    //                if [ ! -n "$CLAIR_DB_ID" ] || [ ! -n "$CLAIR_SERVER_ID" ]
+    //                then 
+    //                    echo "Clair db and server is not running"
+    //                    echo "Ensure that clair service is up"
+    //                    touch clair-scanning-report.json
+    //                    exit 1
+    //                else 
+    //                    echo "Clair db is up and clair server is running ....."
+    //                fi
+    //                echo "About to start clair scanner ........."
+    //                touch clair-whitelist.yml
+    //                own_ip=$(hostname -i)
+    //                wget https://github.com/arminc/clair-scanner/releases/download/v8/clair-scanner_linux_amd64
+    //                mv clair-scanner_linux_amd64 clair-scanner
+    //                chmod +x clair-scanner
+    //                #./clair-scanner --ip=$own_ip -l clair.log -r clair-scanning-report.json  $IMAGENAME
+    //                ./clair-scanner --ip=$own_ip -l clair.log -r clair-scanning-report.json -w clair-whitelist.yaml $IMAGENAME
+    //                cat clair-scanning-report.json
+    //                if test -f "clair-scanning-report.json"; then
+    //                    input="clair-scanning-report.json"
+    //                    while IFS= read -r line
+    //                    do
+    //                        if [[ ("$line" == *"[]"* ) && ("$line" == *"unapproved"*) ]]; then
+    //                            echo "clair found 0 vulnerabilities"
+    //                            exit 0           
+    //                        fi
+    //                        done < "$input" 
+    //                        echo "clair found vulnerabilities"
+    //                        exit 1
+                        
+    //                else
+    //                    exit 1
+    //                fi
+    //              '''
+    //            } 
+    //            finally {
+    //              archiveArtifacts allowEmptyArchive: true, artifacts: 'clair-scanning-report.json', onlyIfSuccessful: false
+    //            }    
+    //         }
+    //       //}
+    //    //} 
+    //  }
+    //}
+    //stage ('Certify Container with RH'){
+    // steps{
+    //    script {
+    //        try {
+    //            sh '''#!/bin/sh
+    //            //Docker login
+    //            docker login -u unused scan.connect.redhat.com -p ${REDHAT_DOCKER_PASS}
+    //            IMAGE_ID=`docker images --filter=reference=''' + imageTag + ''' --format "{{.ID}}"`
+    //            echo Image Id $IMAGE_ID
+    //            TAG_OUTPUT=`docker tag $IMAGE_ID scan.connect.redhat.com/${RH_PROJECT_ID}/''' + imageTag + '''`
+    //            OUTPUT=`docker push scan.connect.redhat.com/${RH_PROJECT_ID}/''' + imageTag + ''' 2>&1`
+    //            echo output $OUTPUT
+    //            DIGEST_ID=`echo $OUTPUT | awk -Fdigest: '{print $2}' | awk  '{print $1}'`
+    //            echo Digest ID $DIGEST_ID
+    //            if [ -z $DIGEST_ID ]
+    //            then
+    //               echo "Redhat scan : DIGEST Cannot be empty"
+    //               exit 1
+    //            fi
+    //            x=0
+    //            sleep 200
+    //            while [ true ]
+    //            do
+    //                STATUS=`curl -X GET "https://connect.redhat.com/api/v2/container/${RH_PROJECT_ID}/certResults/$DIGEST_ID" -H  "accept: */*" -H  "Authorization: Bearer ${REDHAT_API_TOKEN}"`
+    //                echo Status $STATUS
+    //                
+    //                RETURNCODE=`echo $STATUS | sed 's/"//g' | awk -F code:  '{print $2}' | awk -F , '{print $1}'`
+    //                RESULTS=`echo $STATUS | awk -F results '{print $2}' | awk -F { '{print $2}' | awk -F } '{print $1}'`
+    //                if [ "${RETURNCODE}" -eq  200 ]
+    //                then 
+    //                  echo $RESULTS > redhat_scan.txt
+    //                  if grep "false" redhat_scan.txt > /dev/null
+    //                  then
+    //                    echo "Redhat Scan of certified Image failed : $RESULTS"
+    //                    exit 1
+    //                  else
+    //                    echo "Redhat Scan Passed : $RESULTS"
+    //                    break;
+    //                  fi
+    //                elif [ "${RETURNCODE}" -eq  403 ]
+    //                then
+    //                    echo "Redhat Scan of certified image: Unauthorized invalid or missing API Key"
+    //                    exit 1
+    //                elif [ "${RETURNCODE}" -eq 404 ]
+    //                then
+    //                  echo "Redhat Scan of certified image: A project with the specified PID or digest was not found"
+    //                  echo "Waiting for Scan to complete ... $x"
+    //                  sleep 60
+    //                  x=$(( $x + 1 ))
+    //                  if [ $x -gt 60 ]
+    //                    then 
+    //                      echo "Exiting out"
+    //                      exit 1
+    //                  fi
+    //                fi
+    //            done
+    //            echo "Reached the end"
+    //            '''
+    //        }
+    //        finally {
+    //            archiveArtifacts allowEmptyArchive: true, artifacts: 'redhat_scan.txt', onlyIfSuccessful: false
+    //        }
+    //    }
+    //  }
+    //}
+
+    //stage('Publish Certified Container - Actual') {
+    //  when {
+    //    branch 'master'
+    //    not {
+    //      buildingTag()
+    //    }
+    //  }
+    //  steps{
+    //    script {
+    //      docker.withRegistry("https://${DOCKER_SERVER}", DOCKER_CREDENTIALS) {
+    //        image.push()
+    //        image = docker.build imageTagPartial+":latest"
+    //        image.push()
+    //      }
+    //    }
+    //  }
+    //}
+    stage('Publish Certified Container') {
+      //when {
+      //  branch 'master'
+      //  not {
+      //    buildingTag()
+      //  }
+      //}
+      steps{
+        script {
+          //withCredentials([usernamePassword(credentialsId: 'mcds-docker-registry-prd-credentials', usernameVariable: 'OCP_REG_USERNAME', passwordVariable: 'OCP_REG_PASSWORD')]) {
+            
+            sh '''#!/bin/bash
+            echo "building '''+imageTagPartial+''':latest ..."
+            docker image build -t ${DOCKER_SERVER}/'''+imageTagPartial+''':latest .
+            docker push  "${DOCKER_SERVER}/'''+imageTagPartial+''':latest"
+            echo "pushed the image"
+            '''  
+          //}
+        }
+      }
+    }
+  }
+}
